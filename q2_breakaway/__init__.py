@@ -7,6 +7,7 @@
 # ----------------------------------------------------------------------------
 
 from ._alphas import alpha, plot
+from ._chrono_plot import chrono_plot
 from ._version import get_versions
 
 

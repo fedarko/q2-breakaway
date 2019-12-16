@@ -8,7 +8,7 @@
 import importlib
 
 import qiime2.plugin
-from qiime2.plugin import Properties, Choices, Str
+from qiime2.plugin import Properties, Choices, Str, MetadataColumn, Categorical, Numeric
 
 from q2_types.sample_data import SampleData, AlphaDiversity
 from q2_types.feature_data import FeatureData, Sequence
@@ -53,4 +53,26 @@ plugin.visualizers.register_function(
     },
     name='Richness plot, better',
     description='Making better plots'
+)
+
+plugin.visualizers.register_function(
+    function=q2_breakaway.chrono_plot,
+    inputs={'alpha_diversity': SampleData[AlphaDiversity % Properties(["StandardError", "LowerConfidence", "UpperConfidence", "SampleNames", "MethodName", "ModelType"])]},
+    parameters={'metadata': MetadataColumn[Categorical | Numeric]},
+    parameter_descriptions={
+        'metadata': "A column in the metadata describing samples' timestamps."
+    },
+    input_descriptions={
+        'alpha_diversity': ('Vector containing per-sample breakaway generated alpha diversities.')
+    },
+    name='Visualizes Breakaway output in relation to time',
+    description=(
+        'Plots Breakaway diversities (and error bars!) on a chronological '
+        '(time) axis. '
+        'Timestamps -- the column you select via --m-metadata-column -- will '
+        'be read using the dateutil.parser.parse() python function, which is '
+        'described at https://dateutil.readthedocs.io/en/stable/parser.html. '
+        'This function should be pretty robust, but if you have really funky '
+        'dates then it will probably misbehave.'
+    )
 )
